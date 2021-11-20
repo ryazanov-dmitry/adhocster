@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include "../broadcast.c"
 #include "../socket.c"
+#include <stdbool.h>
 
 void assert(int, int);
 void broadcast_happypath(void);
@@ -10,6 +11,8 @@ void not_null(void *pointer);
 void broadcast_wrongIp_error(void);
 void not_negative(int result);
 void broadcast_2_messages(void);
+void listen_happypath(void);
+void assert_message_is_hello(char m[]);
 
 int main()
 {
@@ -17,6 +20,7 @@ int main()
     broadcast_wrongIp_error();
     broadcast_happypath();
     broadcast_2_messages();
+    listen_happypath();
 }
 
 /////// Tests ////////////////////////////
@@ -65,8 +69,24 @@ void broadcast_2_messages(void)
     not_negative(result2);
 }
 
-/////// Tests ////////////////////////////
+bool listener_handler_called = false;
+void listen_happypath(void)
+{
+    printf("listen_happypath\n");
 
+    struct AdhocsterSocket *sender_socket = create_adhocster_socket("127.0.0.1", 1337);
+    struct AdhocsterSocket *listener_socket = create_adhocster_socket("127.0.0.1", 1337);
+
+    int listenCode = listen(socket, assert_message_is_hello);
+    not_negative(listenCode);
+
+    int broadcastCode = broadcast(sender_socket, "message");
+    not_negative(broadcastCode);
+
+    is_true(listener_handler_called, "Handler was no called.");
+}
+
+/////// Tests ////////////////////////////
 
 /////// Testing Library
 
@@ -93,3 +113,17 @@ void not_negative(int result)
         printf("Fail: '%d' < 0.\n", result);
     }
 }
+
+void is_true(bool res, char m[])
+{
+    if(!res)
+    {
+        printf(m);
+    }
+}
+
+/////// Helpers
+void assert_message_is_hello(char m[])
+{
+    listener_handler_called = true;
+};
