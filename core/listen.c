@@ -1,5 +1,7 @@
 #include "socket.c"
-#include <threads.h>
+#include <pthread.h>
+
+void *listen_loop(void *arg);
 
 // TODO: How to do it without global var?
 void (*messageHandler)(char m[]);
@@ -20,21 +22,29 @@ int listen_adhoc(struct AdhocsterSocket *socket, void (*f)(char m[]))
         return bindCode;
     }
 
-    //
-    thrd_create(&thr[n], mythread, NULL);
+    pthread_t threadId;
+    // thrd_create(&thr, listen_loop, NULL);
+    pthread_create(&threadId, NULL, listen_loop, NULL);
 }
 
-void listen_loop(void)
+void *listen_loop(void *arg)
 {
-    while (true)
+    int addrSize = sizeof(listenSocket->addr);
+
+    //TODO: Maybe it is not the best way?
+    while (1)
     {
 
+        char message[2000];
+
         int recvCode = recvfrom(
-            socklistenSocket->socketDescriptor,
-            client_message,
-            sizeof(client_message),
+            listenSocket->socketDescriptor,
+            message,
+            sizeof(message),
             0,
-            (struct sockaddr *)&client_addr,
-            &client_struct_length);
+            (struct sockaddr *)&listenSocket->addr,
+            &addrSize);
+
+        messageHandler(message);
     }
 }

@@ -1,7 +1,9 @@
 #include <stdio.h>
 #include "../broadcast.c"
 #include "../socket.c"
+#include "../listen.c"
 #include <stdbool.h>
+#include <unistd.h>
 
 void assert(int, int);
 void broadcast_happypath(void);
@@ -13,6 +15,7 @@ void not_negative(int result);
 void broadcast_2_messages(void);
 void listen_happypath(void);
 void assert_message_is_hello(char m[]);
+void is_true(bool res, char m[]);
 
 int main()
 {
@@ -77,12 +80,13 @@ void listen_happypath(void)
     struct AdhocsterSocket *sender_socket = create_adhocster_socket("127.0.0.1", 1337);
     struct AdhocsterSocket *listener_socket = create_adhocster_socket("127.0.0.1", 1337);
 
-    int listenCode = listen(socket, assert_message_is_hello);
+    int listenCode = listen_adhoc(listener_socket, assert_message_is_hello);
     not_negative(listenCode);
 
     int broadcastCode = broadcast(sender_socket, "message");
     not_negative(broadcastCode);
 
+    sleep(0.0001);
     is_true(listener_handler_called, "Handler was no called.");
 }
 
@@ -116,9 +120,9 @@ void not_negative(int result)
 
 void is_true(bool res, char m[])
 {
-    if(!res)
+    if (!res)
     {
-        printf(m);
+        printf("Fail: %s\n", m);
     }
 }
 
