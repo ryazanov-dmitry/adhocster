@@ -17,7 +17,7 @@ This function is responsible for creating structures
 for adhocster's message broadcast: UDP socket with configurable
 broadcast address.
 */
-struct AdhocsterSocket* create_adhocster_socket(char broadcastIp[], int port)
+struct AdhocsterSocket *create_adhocster_socket(char broadcastIp[], int port)
 {
     // TODO: IPPROTO_UDPLITE?
     int socket_desc = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
@@ -31,7 +31,12 @@ struct AdhocsterSocket* create_adhocster_socket(char broadcastIp[], int port)
     broadcast_addr.sin_family = AF_INET;
     // TODO: Make configurable.
     broadcast_addr.sin_addr.s_addr = inet_addr(broadcastIp);
-    broadcast_addr.sin_port = port;
+    if (broadcastIp[0] == '\0')
+    {
+        broadcast_addr.sin_addr.s_addr = htonl(INADDR_ANY);
+    }
+
+    broadcast_addr.sin_port = htons(port);
 
     struct AdhocsterSocket *adhocsterSocket = malloc(sizeof(struct AdhocsterSocket));
     adhocsterSocket->addr = broadcast_addr;

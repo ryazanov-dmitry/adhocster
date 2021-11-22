@@ -86,8 +86,8 @@ void listen_happypath(void)
     int broadcastCode = broadcast(sender_socket, "message");
     not_negative(broadcastCode);
 
-    sleep(0.0001);
-    is_true(listener_handler_called, "Handler was no called.");
+    sleep(0.5);
+    is_true(listener_handler_called, "Handler was not called.");
 }
 
 /////// Tests ////////////////////////////
@@ -129,5 +129,6 @@ void is_true(bool res, char m[])
 /////// Helpers
 void assert_message_is_hello(char m[])
 {
+    // printf("Message received: %s\n", m);
     listener_handler_called = true;
 };

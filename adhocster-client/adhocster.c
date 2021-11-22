@@ -3,8 +3,8 @@
 #include "../core/broadcast.c"
 #include <stdio.h>
 
-#define BROADCAST_IP "127.0.0.1"
-#define ADHOCSTER_PORT 1337
+#define BROADCAST_IP "0.0.0.0"
+#define ADHOCSTER_PORT 8888
 #define CLIENT_MESSAGE_LENGTH 50
 
 void incoming_message_renderer(char m[]);
@@ -12,7 +12,7 @@ void incoming_message_renderer(char m[]);
 int main()
 {
     // TODO: Make ip configurable.
-    struct AdhocsterSocket *broadcastSocket = create_adhocster_socket(BROADCAST_IP, ADHOCSTER_PORT);
+    struct AdhocsterSocket *broadcastSocket = create_adhocster_socket("", ADHOCSTER_PORT);
     int listenCode = listen_adhoc(broadcastSocket, incoming_message_renderer);
 
     if (listenCode < 0)

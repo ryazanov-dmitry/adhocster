@@ -45,6 +45,12 @@ void *listen_loop(void *arg)
             (struct sockaddr *)&listenSocket->addr,
             &addrSize);
 
+        if(recvCode < 0)
+        {
+            printf("Failed to receive message.");
+            return NULL;
+        }
+
         messageHandler(message);
     }
 }
