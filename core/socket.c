@@ -27,6 +27,9 @@ struct AdhocsterSocket *create_adhocster_socket(char broadcastIp[], int port)
         return NULL;
     }
 
+    int broadcastEnabled = 1;
+    setsockopt(socket_desc, SOL_SOCKET, SO_BROADCAST, &broadcastEnabled, sizeof(broadcastEnabled));
+
     struct sockaddr_in broadcast_addr;
     broadcast_addr.sin_family = AF_INET;
     // TODO: Make configurable.

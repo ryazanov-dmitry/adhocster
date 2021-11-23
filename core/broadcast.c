@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include "socket.c"
+#include <errno.h>
 
 /*
 Broadcasts string message using AdhocsterSocket.
@@ -17,7 +18,7 @@ int broadcast(struct AdhocsterSocket *socket, char message[])
 
     if (result < 0)
     {
-        printf("Failed to send.\n");
+        printf("Failed to send. Errno: '%d'\n", errno);
         return -1;
     }
 

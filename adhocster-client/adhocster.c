@@ -3,7 +3,7 @@
 #include "../core/broadcast.c"
 #include <stdio.h>
 
-#define BROADCAST_IP "0.0.0.0"
+#define BROADCAST_IP "192.168.1.255"
 #define ADHOCSTER_PORT 8888
 #define CLIENT_MESSAGE_LENGTH 50
 
